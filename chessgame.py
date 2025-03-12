@@ -1,22 +1,33 @@
 from chessboard import Chessboard
 
-start_position:str = "rkbqkbkr/pppppppp/8/8/8/8/PPPPPPPP/RKBQKBKR QKqk - 0 0"
+start_position:str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR QKqk - 0 0"
 
-chess = Chessboard(start_position)
+print_piece:dict = {
+    "p": "♙",
+    "P": "♟",
+    "n": "♘",
+    "N": "♞",
+    "b": "♗",
+    "B": "♝",
+    "r": "♖",
+    "R": "♜",
+    "q": "♕",
+    "Q": "♛",
+    "k": "♔",
+    "K": "♚",
+    "": " "
+}
 
-fen_break:int = start_position.index(" ")
-print(start_position[:fen_break].split("/"))
-
-def print_board(fen_code:str):
-    fen_break:int = fen_code.index(" ")
-    board:list = fen_code[fen_break].split("/")
-
+def print_board(pos:list[str]):
     rank:int = 0
     print("  ┌────┬────┬────┬────┬────┬────┬────┬────┐")
 
     for i in range(15):
         if i % 2 == 0:
-            print(f"{rank} │ ♖  │ ♘  │ ♗  │ ♕  │ ♔  │ ♗  │ ♘  │ ♖  │")
+            full_rank:str = f"{8 - rank} | "
+            for column in range(8):
+                full_rank += f"{print_piece[pos[rank * 8 + column]]}  │ "
+            print(full_rank)
             rank += 1
         else:
             print("  ├────┼────┼────┼────┼────┼────┼────┼────┤")
@@ -24,7 +35,21 @@ def print_board(fen_code:str):
     print("  └────┴────┴────┴────┴────┴────┴────┴────┘")
     print("     A    B    C    D    E    F    G    H")
 
-print_board(start_position)
+chess = Chessboard(start_position)
+
+checkmate:bool = False
+
+
+print_board(chess.get_board())
+print("")
+
+while not checkmate:
+    move:str = input("Make your move: ")
+    print("")
+    print_board(chess.get_board())
+    print("")
+
+
 
 #print("♙♘♗♖♕♔♚♛♜♝♞♟")
 #print("")
