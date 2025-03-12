@@ -1,6 +1,6 @@
 class Chessboard:
-    def __init__(this, fen:str):
 
+    def __init__(this, fen:str):
         # Converts FEN notation to 64 length array
         def fen_to_board(position:str) -> list[str]:
             board:list[str] = []
@@ -12,6 +12,7 @@ class Chessboard:
                     board.append(piece)
             return board
         
+
         def notation_to_index(notation:str) -> int:
             if len(notation) > 1:
                 column:int = ord(notation[0].lower()) - 96
@@ -20,16 +21,25 @@ class Chessboard:
             else:
                 return None
         
+
         fen_arr = fen.split(" ")
+
         this.pos:str = fen_arr[0].replace("/", "")
         this.castle:str = fen_arr[1]
         this.enpassant = notation_to_index(fen_arr[2])
         this.no_capture:int = int(fen_arr[3])
         this.full_move:int = int(fen_arr[4])
         this.board:list[str] = fen_to_board(this.pos)
+        this.all_moves:list[object] = this.calculate_moves(this.board)
+
+
+    def get_board(this):
+        return this.board
+
 
     def in_range(this, x:int) -> bool:
         return 0 < x < 64
+
 
     def pawn_move(this, x:int) -> list[int]:
         moves:list[int] = []
@@ -58,21 +68,28 @@ class Chessboard:
                     moves.append(sqr)
 
         return moves
-
-    def get_board(this):
-        return this.board
     
-
+    
+    def calculate_moves(this, board:list[str]):
+        all_moves = []
+        for i in range(len(board)):
+            if board[i].lower() == 'p':
+                all_moves.append({
+                    "index": i,
+                    "moves": this.pawn_move(i),
+                    "white": board[i].isupper()
+                })
+        return all_moves
+    
 
 chess = Chessboard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR QKqk - 0 0")
 
-print(chess.pawn_move(49))
+print(chess.all_moves)
 
 VERTICAL = 8
 HORIZONTAL = 1
 DIAGONAL_LR = 9
 DIAGONAL_RL = 7
-
 
 #┌────┬────┬────┬────┬────┬────┬────┬────┐"
 #│  0 │  1 │  2 │  3 │  4 │  5 │  6 │  7 │"
